@@ -7,14 +7,23 @@ import {
   FaDownload,
 } from "react-icons/fa";
 
+const APP_URL =
+  "https://fifa-worldcup-brtech.vercel.app/";
+
 export default function ResultPanel({
   form,
   result,
 }) {
-
   if (!result) {
     return (
-      <div className="glass rounded-3xl p-8 text-white min-h-[500px] flex items-center justify-center">
+      <div
+        style={{
+          background: "rgba(255,255,255,0.08)",
+          border: "1px solid rgba(255,255,255,0.15)",
+          backdropFilter: "blur(10px)",
+        }}
+        className="rounded-3xl p-8 text-white min-h-[500px] flex items-center justify-center"
+      >
         <div className="text-center">
           <div className="text-7xl mb-4">🏆</div>
 
@@ -22,8 +31,14 @@ export default function ResultPanel({
             FIFA RESULT CERTIFICATE
           </h2>
 
-          <p className="mt-4 text-white/80">
-            Complete the quiz to unlock your result.
+          <p
+            style={{
+              color: "rgba(255,255,255,0.8)",
+            }}
+            className="mt-4"
+          >
+            Complete the quiz to unlock your FIFA
+            World Cup certificate.
           </p>
         </div>
       </div>
@@ -34,32 +49,57 @@ export default function ResultPanel({
     result.title.includes("LEGEND");
 
   const shareWhatsApp = () => {
+    const message = `🏆 I achieved "${result.title}" in the FIFA World Cup Challenge!
 
-    const text =
-      `🏆 I got "${result.title}" in the FIFA World Cup Challenge!\n\nTry it now!`;
+👤 Name: ${form.name || "Football Fan"}
+⚽ Matches Watched: ${form.matches || "N/A"}
+😴 Sleep Lost: ${form.sleep || "N/A"}
+🏳️ Team: ${form.team || "Argentina"}
+
+Think you can beat my score?
+
+👉 ${APP_URL}`;
 
     window.open(
-      `https://wa.me/?text=${encodeURIComponent(text)}`,
+      `https://wa.me/?text=${encodeURIComponent(
+        message
+      )}`,
       "_blank"
     );
   };
 
-  const shareLinkedIn = () => {
+  const shareLinkedIn = async () => {
+    const text = `🏆 I achieved "${result.title}" in the FIFA World Cup Challenge!
 
-    const url = window.location.origin;
+Try it yourself:
+${APP_URL}`;
+
+    try {
+      await navigator.clipboard.writeText(
+        text
+      );
+
+      alert(
+        "Result copied to clipboard. Paste it into your LinkedIn post."
+      );
+    } catch (e) {
+      console.error(e);
+    }
 
     window.open(
-      `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`,
+      `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
+        APP_URL
+      )}`,
       "_blank"
     );
   };
 
   const downloadCertificate = async () => {
-
     try {
-
       const certificate =
-        document.getElementById("certificate");
+        document.getElementById(
+          "certificate"
+        );
 
       if (!certificate) {
         alert("Certificate not found");
@@ -67,22 +107,29 @@ export default function ResultPanel({
       }
 
       const canvas =
-        await html2canvas(certificate, {
-          scale: 3,
-          useCORS: true,
-          backgroundColor: null,
-        });
+        await html2canvas(
+          certificate,
+          {
+            scale: 2,
+            useCORS: true,
+            backgroundColor: "#0f172a",
+          }
+        );
 
       const image =
-        canvas.toDataURL("image/png");
+        canvas.toDataURL(
+          "image/png",
+          1.0
+        );
 
       const link =
         document.createElement("a");
 
       link.href = image;
 
-      link.download =
-        `${form.name || "fifa"}-certificate.png`;
+      link.download = `${
+        form.name || "FIFA"
+      }-Certificate.png`;
 
       document.body.appendChild(link);
 
@@ -90,12 +137,11 @@ export default function ResultPanel({
 
       document.body.removeChild(link);
 
-    } catch (err) {
-
-      console.error(err);
+    } catch (error) {
+      console.error(error);
 
       alert(
-        "Unable to generate certificate."
+        "Certificate download failed."
       );
     }
   };
@@ -114,45 +160,32 @@ export default function ResultPanel({
           y: 0,
         }}
       >
-
         <div
           id="certificate"
-          className="
-          relative
-          overflow-hidden
-          rounded-[30px]
-          border-[5px]
-          border-yellow-400
-          shadow-2xl
-          text-white
-          "
+          className="relative overflow-hidden rounded-[30px] shadow-2xl"
           style={{
             background:
               "linear-gradient(135deg,#0f172a,#312e81,#be185d)",
+            border:
+              "5px solid #facc15",
+            color: "#ffffff",
           }}
         >
-
           <img
             src="/stadium.jpg"
             alt=""
-            className="
-            absolute
-            inset-0
-            w-full
-            h-full
-            object-cover
-            opacity-20
-            pointer-events-none
-            "
+            className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+            style={{
+              opacity: 0.15,
+            }}
           />
 
           <div
-            className="
-            absolute
-            inset-0
-            bg-black/20
-            pointer-events-none
-            "
+            style={{
+              background:
+                "rgba(0,0,0,0.2)",
+            }}
+            className="absolute inset-0 pointer-events-none"
           />
 
           <div className="relative z-10 p-6 md:p-10">
@@ -162,72 +195,37 @@ export default function ResultPanel({
               <img
                 src="/logo.png"
                 alt="BR Tech"
-                className="
-                h-16 md:h-20
-                mx-auto
-                bg-white
-                rounded-2xl
-                p-2
-                mb-5
-                "
+                className="h-16 md:h-20 mx-auto bg-white rounded-2xl p-2 mb-5"
               />
 
               <img
                 src="/trophy.png"
                 alt="Trophy"
-                className="
-                h-24 md:h-36
-                mx-auto
-                "
+                className="h-24 md:h-36 mx-auto"
               />
 
               <h3
-                className="
-                mt-4
-                uppercase
-                tracking-[3px]
-                text-yellow-300
-                font-bold
-                text-sm md:text-base
-                "
+                style={{
+                  color: "#fde047",
+                }}
+                className="mt-4 uppercase tracking-[4px] font-bold"
               >
                 Official FIFA Fan Certificate
               </h3>
 
-              <h2
-                className="
-                mt-4
-                text-3xl
-                md:text-5xl
-                font-black
-                "
-              >
+              <h2 className="mt-4 text-3xl md:text-5xl font-black">
                 {result.title}
               </h2>
 
-              <p
-                className="
-                mt-4
-                text-lg
-                md:text-xl
-                "
-              >
+              <p className="mt-4 text-lg md:text-xl">
                 {result.message}
               </p>
 
             </div>
 
-            <div
-              className="
-              mt-8
-              grid
-              grid-cols-1
-              sm:grid-cols-3
-              gap-4
-              "
-            >
+            <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
 
-              <div className="bg-white rounded-2xl p-4 text-black text-center">
+              <div className="bg-white rounded-2xl text-black text-center p-4">
                 <div className="text-4xl">⚽</div>
                 <div>Matches</div>
                 <div className="font-black text-2xl">
@@ -235,7 +233,7 @@ export default function ResultPanel({
                 </div>
               </div>
 
-              <div className="bg-white rounded-2xl p-4 text-black text-center">
+              <div className="bg-white rounded-2xl text-black text-center p-4">
                 <div className="text-4xl">😴</div>
                 <div>Sleep</div>
                 <div className="font-black text-2xl">
@@ -243,7 +241,7 @@ export default function ResultPanel({
                 </div>
               </div>
 
-              <div className="bg-white rounded-2xl p-4 text-black text-center">
+              <div className="bg-white rounded-2xl text-black text-center p-4">
                 <div className="text-4xl">🏆</div>
                 <div>Team</div>
                 <div className="font-black text-sm">
@@ -254,45 +252,37 @@ export default function ResultPanel({
             </div>
 
             <div
-              className="
-              mt-8
-              bg-white/20
-              rounded-2xl
-              p-5
-              text-center
-              "
+              className="mt-8 rounded-2xl p-5 text-center"
+              style={{
+                background:
+                  "rgba(255,255,255,0.2)",
+              }}
             >
-              <div className="text-sm uppercase">
+              <div className="text-sm uppercase tracking-wider">
                 Awarded To
               </div>
 
-              <div
-                className="
-                text-2xl
-                md:text-4xl
-                font-black
-                mt-2
-                "
-              >
-                {form.name || "Future Champion"}
+              <div className="mt-2 text-2xl md:text-4xl font-black">
+                {form.name ||
+                  "Future Champion"}
               </div>
             </div>
 
             <div
-              className="
-              mt-8
-              pt-4
-              border-t
-              border-white/20
-              flex
-              justify-between
-              text-xs
-              md:text-sm
-              "
+              className="mt-8 pt-4 flex justify-between text-xs md:text-sm"
+              style={{
+                borderTop:
+                  "1px solid rgba(255,255,255,0.2)",
+              }}
             >
-              <span>
-                BR Tech Solutions
-              </span>
+              <a
+                href="https://www.brtechsolution.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:underline"
+              >
+                BR Tech Solutions Private Limited
+              </a>
 
               <span>
                 FIFA World Cup Challenge
@@ -302,86 +292,33 @@ export default function ResultPanel({
           </div>
         </div>
 
-        {/* ACTION BUTTONS */}
-
-        <div
-          className="
-          relative
-          z-50
-          mt-6
-          flex
-          flex-col
-          md:flex-row
-          gap-3
-          "
-        >
+        <div className="mt-6 flex flex-col md:flex-row gap-3">
 
           <button
-            type="button"
             onClick={shareWhatsApp}
-            className="
-            cursor-pointer
-            flex-1
-            bg-green-500
-            hover:bg-green-600
-            py-4
-            rounded-xl
-            font-bold
-            flex
-            items-center
-            justify-center
-            gap-2
-            "
+            className="flex-1 bg-green-500 hover:bg-green-600 py-4 rounded-xl font-bold flex items-center justify-center gap-2"
           >
             <FaWhatsapp />
-            WhatsApp
+            Share on WhatsApp
           </button>
 
           <button
-            type="button"
             onClick={shareLinkedIn}
-            className="
-            cursor-pointer
-            flex-1
-            bg-blue-600
-            hover:bg-blue-700
-            py-4
-            rounded-xl
-            font-bold
-            flex
-            items-center
-            justify-center
-            gap-2
-            "
+            className="flex-1 bg-blue-600 hover:bg-blue-700 py-4 rounded-xl font-bold flex items-center justify-center gap-2"
           >
             <FaLinkedin />
-            LinkedIn
+            Share on LinkedIn
           </button>
 
           <button
-            type="button"
             onClick={downloadCertificate}
-            className="
-            cursor-pointer
-            flex-1
-            bg-yellow-400
-            hover:bg-yellow-500
-            text-black
-            py-4
-            rounded-xl
-            font-bold
-            flex
-            items-center
-            justify-center
-            gap-2
-            "
+            className="flex-1 bg-yellow-400 hover:bg-yellow-500 text-black py-4 rounded-xl font-bold flex items-center justify-center gap-2"
           >
             <FaDownload />
-            Download PNG
+            Download Certificate
           </button>
 
         </div>
-
       </motion.div>
     </>
   );
