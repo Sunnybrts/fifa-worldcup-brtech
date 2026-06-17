@@ -218,7 +218,27 @@ export default function App() {
                     <FaLinkedin />
                     LinkedIn
                   </a>
-                </div>
+                </div>const downloadCertificate = async () => {
+  const certificate =
+    document.getElementById("certificate");
+
+  const canvas = await html2canvas(certificate, {
+    scale: 2,
+    useCORS: true,
+  });
+
+  const image = canvas.toDataURL("image/png");
+
+  const link = document.createElement("a");
+
+  link.href = image;
+
+  link.download = `${form.name
+    .replace(/\s+/g, "-")
+    .toLowerCase()}-fifa-certificate.png`;
+
+  link.click();
+};
 
                 <div className="mt-8 text-sm">
                   Powered by BR Tech Solutions
