@@ -1,3 +1,4 @@
+import html2canvas from "html2canvas";
 import "./App.css";
 import { useState } from "react";
 import Confetti from "react-confetti";
