@@ -5,41 +5,24 @@ import ResultPanel from "./components/ResultPanel";
 import Footer from "./components/Footer";
 
 function App() {
-  const [form, setForm] = useState({
-    name: "",
-    matches: "",
-    sleep: "",
-    team: "",
-  });
-
-  const [result, setResult] = useState(null);
+  const [score, setScore] = useState(null);
 
   return (
-    <div className="min-h-screen stadium-bg">
-
+    <div className="stadium-bg min-h-screen">
       <Header />
 
       <div className="max-w-7xl mx-auto px-4 pb-10">
-
-        <div className="grid lg:grid-cols-2 gap-8">
-
-          <QuizPanel
-            form={form}
-            setForm={setForm}
-            setResult={setResult}
-          />
-
+        {score === null ? (
+          <QuizPanel setScore={setScore} />
+        ) : (
           <ResultPanel
-            form={form}
-            result={result}
+            score={score}
+            setScore={setScore}
           />
-
-        </div>
-
+        )}
       </div>
 
       <Footer />
-
     </div>
   );
 }

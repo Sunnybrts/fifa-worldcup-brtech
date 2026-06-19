@@ -1,325 +1,144 @@
-import { motion } from "framer-motion";
-import Confetti from "react-confetti";
 import html2canvas from "html2canvas";
-import {
-  FaWhatsapp,
-  FaLinkedin,
-  FaDownload,
-} from "react-icons/fa";
 
 const APP_URL =
   "https://fifa-worldcup-brtech.vercel.app/";
 
 export default function ResultPanel({
-  form,
-  result,
+  score,
+  setScore,
 }) {
-  if (!result) {
-    return (
-      <div
-        style={{
-          background: "rgba(255,255,255,0.08)",
-          border: "1px solid rgba(255,255,255,0.15)",
-          backdropFilter: "blur(10px)",
-        }}
-        className="rounded-3xl p-8 text-white min-h-[500px] flex items-center justify-center"
-      >
-        <div className="text-center">
-          <div className="text-7xl mb-4">🏆</div>
 
-          <h2 className="text-3xl font-black">
-            FIFA RESULT CERTIFICATE
-          </h2>
+  const getRank = () => {
 
-          <p
-            style={{
-              color: "rgba(255,255,255,0.8)",
-            }}
-            className="mt-4"
-          >
-            Complete the quiz to unlock your FIFA
-            World Cup certificate.
-          </p>
-        </div>
-      </div>
-    );
-  }
+    if (score.score <= 3)
+      return "🥉 CASUAL FAN";
 
-  const isLegend =
-    result.title.includes("LEGEND");
+    if (score.score <= 6)
+      return "🥈 FOOTBALL ENTHUSIAST";
 
-  const shareWhatsApp = () => {
-    const message = `🏆 I achieved "${result.title}" in the FIFA World Cup Challenge!
+    if (score.score <= 8)
+      return "🥇 WORLD CUP EXPERT";
 
-👤 Name: ${form.name || "Football Fan"}
-⚽ Matches Watched: ${form.matches || "N/A"}
-😴 Sleep Lost: ${form.sleep || "N/A"}
-🏳️ Team: ${form.team || "Argentina"}
-
-Think you can beat my score?
-
-👉 ${APP_URL}`;
-
-    window.open(
-      `https://wa.me/?text=${encodeURIComponent(
-        message
-      )}`,
-      "_blank"
-    );
+    return "👑 FIFA LEGEND";
   };
 
-  const shareLinkedIn = async () => {
-    const text = `🏆 I achieved "${result.title}" in the FIFA World Cup Challenge!
+  const downloadCertificate =
+    async () => {
 
-Try it yourself:
-${APP_URL}`;
-
-    try {
-      await navigator.clipboard.writeText(
-        text
-      );
-
-      alert(
-        "Result copied to clipboard. Paste it into your LinkedIn post."
-      );
-    } catch (e) {
-      console.error(e);
-    }
-
-    window.open(
-      `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
-        APP_URL
-      )}`,
-      "_blank"
-    );
-  };
-
-  const downloadCertificate = async () => {
-    try {
-      const certificate =
+      const element =
         document.getElementById(
           "certificate"
         );
 
-      if (!certificate) {
-        alert("Certificate not found");
-        return;
-      }
-
       const canvas =
-        await html2canvas(
-          certificate,
-          {
-            scale: 2,
-            useCORS: true,
-            backgroundColor: "#0f172a",
-          }
-        );
-
-      const image =
-        canvas.toDataURL(
-          "image/png",
-          1.0
-        );
+        await html2canvas(element);
 
       const link =
         document.createElement("a");
 
-      link.href = image;
+      link.download =
+        "certificate.png";
 
-      link.download = `${
-        form.name || "FIFA"
-      }-Certificate.png`;
-
-      document.body.appendChild(link);
+      link.href =
+        canvas.toDataURL();
 
       link.click();
+    };
 
-      document.body.removeChild(link);
+  const shareWhatsApp = () => {
 
-    } catch (error) {
-      console.error(error);
+    const text = `🏆 I scored ${score.score}/${score.total} in the FIFA World Cup Knowledge Challenge!
 
-      alert(
-        "Certificate download failed."
-      );
-    }
+${getRank()}
+
+Can you beat me?
+
+${APP_URL}`;
+
+    window.open(
+      `https://wa.me/?text=${encodeURIComponent(
+        text
+      )}`
+    );
   };
 
   return (
-    <>
-      {isLegend && <Confetti />}
+    <div>
 
-      <motion.div
-        initial={{
-          opacity: 0,
-          y: 50,
-        }}
-        animate={{
-          opacity: 1,
-          y: 0,
+      <div
+        id="certificate"
+        className="rounded-3xl p-10 text-center text-white"
+        style={{
+          background:
+            "linear-gradient(135deg,#0f172a,#4c1d95,#e11d48)",
         }}
       >
-        <div
-          id="certificate"
-          className="relative overflow-hidden rounded-[30px] shadow-2xl"
-          style={{
-            background:
-              "linear-gradient(135deg,#0f172a,#312e81,#be185d)",
-            border:
-              "5px solid #facc15",
-            color: "#ffffff",
-          }}
+        <img
+          src="/logo.png"
+          className="h-20 mx-auto mb-5 bg-white p-2 rounded-xl"
+        />
+
+        <h1 className="text-5xl font-black">
+          FIFA WORLD CUP
+        </h1>
+
+        <h2 className="text-3xl mt-3">
+          KNOWLEDGE CERTIFICATE
+        </h2>
+
+        <div className="mt-10 text-xl">
+          Awarded To
+        </div>
+
+        <div className="text-5xl font-black mt-3">
+          {score.name}
+        </div>
+
+        <div className="mt-8 text-3xl">
+          Score
+        </div>
+
+        <div className="text-7xl font-black">
+          {score.score}/
+          {score.total}
+        </div>
+
+        <div className="mt-6 text-4xl">
+          {getRank()}
+        </div>
+
+        <div className="mt-10">
+          BR Tech Solutions
+        </div>
+      </div>
+
+      <div className="grid md:grid-cols-3 gap-3 mt-6">
+
+        <button
+          onClick={shareWhatsApp}
+          className="bg-green-500 text-white p-4 rounded-xl"
         >
-          <img
-            src="/stadium.jpg"
-            alt=""
-            className="absolute inset-0 w-full h-full object-cover pointer-events-none"
-            style={{
-              opacity: 0.15,
-            }}
-          />
+          WhatsApp
+        </button>
 
-          <div
-            style={{
-              background:
-                "rgba(0,0,0,0.2)",
-            }}
-            className="absolute inset-0 pointer-events-none"
-          />
+        <button
+          onClick={downloadCertificate}
+          className="bg-yellow-400 p-4 rounded-xl"
+        >
+          Download
+        </button>
 
-          <div className="relative z-10 p-6 md:p-10">
+        <button
+          onClick={() =>
+            setScore(null)
+          }
+          className="bg-blue-600 text-white p-4 rounded-xl"
+        >
+          Try Again
+        </button>
 
-            <div className="text-center">
+      </div>
 
-              <img
-                src="/logo.png"
-                alt="BR Tech"
-                className="h-16 md:h-20 mx-auto bg-white rounded-2xl p-2 mb-5"
-              />
-
-              <img
-                src="/trophy.png"
-                alt="Trophy"
-                className="h-24 md:h-36 mx-auto"
-              />
-
-              <h3
-                style={{
-                  color: "#fde047",
-                }}
-                className="mt-4 uppercase tracking-[4px] font-bold"
-              >
-                Official FIFA Fan Certificate
-              </h3>
-
-              <h2 className="mt-4 text-3xl md:text-5xl font-black">
-                {result.title}
-              </h2>
-
-              <p className="mt-4 text-lg md:text-xl">
-                {result.message}
-              </p>
-
-            </div>
-
-            <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
-
-              <div className="bg-white rounded-2xl text-black text-center p-4">
-                <div className="text-4xl">⚽</div>
-                <div>Matches</div>
-                <div className="font-black text-2xl">
-                  {form.matches || "30+"}
-                </div>
-              </div>
-
-              <div className="bg-white rounded-2xl text-black text-center p-4">
-                <div className="text-4xl">😴</div>
-                <div>Sleep</div>
-                <div className="font-black text-2xl">
-                  {form.sleep || "15+"}
-                </div>
-              </div>
-
-              <div className="bg-white rounded-2xl text-black text-center p-4">
-                <div className="text-4xl">🏆</div>
-                <div>Team</div>
-                <div className="font-black text-sm">
-                  {form.team || "Argentina"}
-                </div>
-              </div>
-
-            </div>
-
-            <div
-              className="mt-8 rounded-2xl p-5 text-center"
-              style={{
-                background:
-                  "rgba(255,255,255,0.2)",
-              }}
-            >
-              <div className="text-sm uppercase tracking-wider">
-                Awarded To
-              </div>
-
-              <div className="mt-2 text-2xl md:text-4xl font-black">
-                {form.name ||
-                  "Future Champion"}
-              </div>
-            </div>
-
-            <div
-              className="mt-8 pt-4 flex justify-between text-xs md:text-sm"
-              style={{
-                borderTop:
-                  "1px solid rgba(255,255,255,0.2)",
-              }}
-            >
-              <a
-                href="https://www.brtechsolution.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:underline"
-              >
-                BR Tech Solutions Private Limited
-              </a>
-
-              <span>
-                FIFA World Cup Challenge
-              </span>
-            </div>
-
-          </div>
-        </div>
-
-        <div className="mt-6 flex flex-col md:flex-row gap-3">
-
-          <button
-            onClick={shareWhatsApp}
-            className="flex-1 bg-green-500 hover:bg-green-600 py-4 rounded-xl font-bold flex items-center justify-center gap-2"
-          >
-            <FaWhatsapp />
-            Share on WhatsApp
-          </button>
-
-          <button
-            onClick={shareLinkedIn}
-            className="flex-1 bg-blue-600 hover:bg-blue-700 py-4 rounded-xl font-bold flex items-center justify-center gap-2"
-          >
-            <FaLinkedin />
-            Share on LinkedIn
-          </button>
-
-          <button
-            onClick={downloadCertificate}
-            className="flex-1 bg-yellow-400 hover:bg-yellow-500 text-black py-4 rounded-xl font-bold flex items-center justify-center gap-2"
-          >
-            <FaDownload />
-            Download Certificate
-          </button>
-
-        </div>
-      </motion.div>
-    </>
+    </div>
   );
 }
